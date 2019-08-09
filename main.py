@@ -4,9 +4,34 @@ import os
 from analysis import papermanager
 from analysis import textanalyzer
 
+import cloudstorage as gcs
+from google.appengine.api import app_identity
+
+
 app = Flask(__name__)
 
-PDF_FILE_TEMP = 'temp.pdf'
+
+bucket_name = os.environ.get('BUCKET_NAME', app_identity.get_default_gcs_bucket_name())
+bucket = '/' + bucket_name
+PDF_FILE_TEMP = bucket + '/temp.pdf'
+# PDF_FILE_TEMP = 'temp.pdf'
+
+def create_file(filename, content):
+    write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+    gcs_file = gcs.open(filename,
+                        'w',
+                        content_type='application/pdf',
+                        options={'x-goog-meta-foo': 'foo',
+                                 'x-goog-meta-bar': 'bar'},
+                        retry_params=write_retry_params)
+    gcs_file.write(content)
+    gcs_file.close()
+
+def delete_file(filename):
+      try:
+        gcs.delete(filename)
+      except gcs.NotFoundError:
+        pass
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -36,10 +61,13 @@ def home():
         if 'analyze_pdf' in request.form:
             pdf_file = request.files['pdf_file']
             if pdf_file:
-                # try:
-                pdf_file.save(PDF_FILE_TEMP)
+                create_file(PDF_FILE_TEMP, pdf_file.read())
                 text = pm.extract_text(PDF_FILE_TEMP)
-                os.remove(PDF_FILE_TEMP)
+                delete_file(PDF_FILE_TEMP)
+                # try:
+                # pdf_file.save(PDF_FILE_TEMP)
+                # text = pm.extract_text(PDF_FILE_TEMP)
+                # os.remove(PDF_FILE_TEMP)
                 # except:
                     # return render_template('home.html', message="Error reading pdf file.")
 
