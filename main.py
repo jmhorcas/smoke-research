@@ -25,23 +25,23 @@ def home():
         if 'analyze_doi' in request.form:
             paper_doi = request.form['paper_doi']
             if paper_doi:
-                try:
-                    pm.download_paper(paper_doi, PDF_FILE_TEMP)
-                    if os.path.exists(PDF_FILE_TEMP):
-                        text = pm.extract_text(PDF_FILE_TEMP)
-                        os.remove(PDF_FILE_TEMP)
-                except:
-                    return render_template('home.html', message="Couldn't fetch paper, try to upload the pdf file.")
+                # try:
+                pm.download_paper(paper_doi, PDF_FILE_TEMP)
+                if os.path.exists(PDF_FILE_TEMP):
+                    text = pm.extract_text(PDF_FILE_TEMP)
+                    os.remove(PDF_FILE_TEMP)
+                # except:
+                    # return render_template('home.html', message="Couldn't fetch paper, try to upload the pdf file.")
 
         if 'analyze_pdf' in request.form:
             pdf_file = request.files['pdf_file']
             if pdf_file:
-                try:
-                    pdf_file.save(PDF_FILE_TEMP)
-                    text = pm.extract_text(PDF_FILE_TEMP)
-                    os.remove(PDF_FILE_TEMP)
-                except:
-                    return render_template('home.html', message="Error reading pdf file.")
+                # try:
+                pdf_file.save(PDF_FILE_TEMP)
+                text = pm.extract_text(PDF_FILE_TEMP)
+                os.remove(PDF_FILE_TEMP)
+                # except:
+                    # return render_template('home.html', message="Error reading pdf file.")
 
         if text:
             ta = textanalyzer.TextAnalyzer()
