@@ -1,7 +1,7 @@
 # Internal imports
 
 # External imports
-import pdfbox
+# import pdftotext
 import scihub
 
 # CONSTANTS
@@ -14,8 +14,12 @@ class PaperManager():
 
     def extract_text(self, pdf_filename: str) -> str:
         """Extract txt from pdf using the pdfbox module."""
-        p = pdfbox.PDFBox()
-        text = p.extract_text(pdf_filename)
+        # p = pdfbox.PDFBox()
+        # text = p.extract_text(pdf_filename)
+        with open(pdf_filename, 'rb') as f:
+            pdf = pdftotext.PDF(f)
+            
+        text = "\n\n".join(pdf)
         return text
 
     def download_paper(self, paper_doi: str, pdf_filename: str):
