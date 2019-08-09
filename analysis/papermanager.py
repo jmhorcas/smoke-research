@@ -1,8 +1,8 @@
 # Internal imports
 
 # External imports
-# import pdftotext
 import scihub
+import slate3k
 
 # CONSTANTS
 
@@ -17,8 +17,8 @@ class PaperManager():
         # p = pdfbox.PDFBox()
         # text = p.extract_text(pdf_filename)
         with open(pdf_filename, 'rb') as f:
-            pdf = pdftotext.PDF(f)
-            
+            pdf = slate3k.PDF(f)
+
         text = "\n\n".join(pdf)
         return text
 
