@@ -1,0 +1,59 @@
+<html>
+  <body>
+    <h1>Smoke Research</h1>
+	  <h2>Analyze research paper</h2>
+
+    <form action="{{url_for('analysis.home')}}" method='POST' enctype="multipart/form-data">
+      <p>Number of keywords to extract:
+  		<input type="number" name="n_keywords" min="1" value="6">
+  	  </p>
+
+  	  <p>Keyword to extract sentences (optional):
+  		<input type="text" size='20' name="keyword">
+  	  </p>
+
+      <p>DOI:
+        <input type="text" size='50' name="paper_doi">
+        <input type=submit name="analyze_doi" value='Analyze paper from DOI'>
+      </p>
+
+      <p>PDF:
+        <input type="file" name="pdf_file">
+        <input type=submit name="analyze_pdf" value='Analyze paper from pdf'>
+      </p>
+    </form>
+
+    <hr>
+
+    {% if message %}
+      <p>{{ message }}</p>
+    {% endif %}
+
+    {% if data %}
+    <h2>Results</h2>
+      <p>Length: {{data.n_words}} words</p>
+
+      <p>Keywords:
+        <ol>
+        {% for k, freq in data.keywords_list %}
+          <li>{{ k }} ({{ freq }})</li>
+        {% endfor %}
+      </ol>
+      </p>
+
+      {% if data.keyword %}
+      <p>Frequency of '{{data.keyword}}': {{data.frequency}}</p>
+
+      <p>Interesting sentences:
+      <ol>
+      {% for s in data.sentences %}
+        <li>{{ s }}</li>
+      {% endfor %}
+    </ol>
+      </p>
+      {% endif %}
+
+    {% endif %}
+
+  </body>
+</html>
