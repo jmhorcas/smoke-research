@@ -4,7 +4,10 @@ import os
 from collections import Counter
 
 # External imports
+import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
+
 
 # CONSTANTS
 ENGLISH = ('english', 'en')
