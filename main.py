@@ -1,14 +1,15 @@
+from flask import Flask, render_template, request
 import os
 
-from . import analysis
-from flask import render_template, request
-from . import papermanager
-from . import textanalyzer
+from analysis import papermanager
+from analysis import textanalyzer
+
+app = Flask(__name__)
 
 PDF_FILE_TEMP = 'temp.pdf'
 
-@analysis.route('/', methods=['GET', 'POST'])
-@analysis.route('/home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     if request.method == 'GET':
         return render_template('home.html')
@@ -56,3 +57,8 @@ def home():
                 # data['sentences'] = list(filter(ta.valid_sentence, sentences))
 
         return render_template('home.html', data=data)
+
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host='0.0.0.0', port=5555)
